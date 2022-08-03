@@ -1,0 +1,15 @@
+[submodule "Kazel/vendor/assimp"]
+	path = Kazel/vendor/assimp
+	url = https://github.com/assimp/assimp.git
+[submodule "Kazel/vendor/glfw"]
+	path = Kazel/vendor/glfw
+	url = https://github.com/glfw/glfw.git
+[submodule "Kazel/vendor/glm"]
+	path = Kazel/vendor/glm
+	url = https://github.com/g-truc/glm.git
+[submodule "Kazel/vendor/imgui"]
+	path = Kazel/vendor/imgui
+	url = https://github.com/ocornut/imgui.git
+[submodule "Kazel/vendor/spdlog"]
+	path = Kazel/vendor/spdlog
+	url = https://github.com/gabime/spdlog.git
