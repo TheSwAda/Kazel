@@ -22,17 +22,11 @@ class Log {
 };
 
 // get core logger
-//#define KZ_CORE_TRACE(...) ::Kazel::Log::GetCoreLogger()->trace(__VA_ARGS__)
-//#define KZ_CORE_INFO(...) ::Kazel::Log::GetCoreLogger()->info(__VA_ARGS__)
-//#define KZ_CORE_WARN(...) ::Kazel::Log::GetCoreLogger()->warn(__VA_ARGS__)
-//#define KZ_CORE_ERROR(...) ::Kazel::Log::GetCoreLogger()->error(__VA_ARGS__);
-//#define KZ_CORE_FATAL(...) ::Kazel::Log::GetCoreLogger()->critical(__VA_ARGS__)
-
-#define KZ_CORE_TRACE(...) SPDLOG_TRACE(__VA_ARGS__)
-#define KZ_CORE_INFO(...) SPDLOG_INFO(__VA_ARGS__)
-#define KZ_CORE_WARN(...) SPDLOG_WARN(__VA_ARGS__)
-#define KZ_CORE_ERROR(...) SPDLOG_ERROR(__VA_ARGS__)
-#define KZ_CORE_FATAL(...) SPDLOG_CRITICAL(__VA_ARGS__)
+#define KZ_CORE_TRACE(...) ::Kazel::Log::GetCoreLogger()->trace(__VA_ARGS__)
+#define KZ_CORE_INFO(...) ::Kazel::Log::GetCoreLogger()->info(__VA_ARGS__)
+#define KZ_CORE_WARN(...) ::Kazel::Log::GetCoreLogger()->warn(__VA_ARGS__)
+#define KZ_CORE_ERROR(...) ::Kazel::Log::GetCoreLogger()->error(__VA_ARGS__);
+#define KZ_CORE_FATAL(...) ::Kazel::Log::GetCoreLogger()->critical(__VA_ARGS__)
 
 // get app logger
 #define KZ_INFO(...) ::Kazel::Log::GetClientLogger()->info(__VA_ARGS__)

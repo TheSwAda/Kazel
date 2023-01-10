@@ -85,7 +85,7 @@ class BufferLayout {
     }
   }
 
-  uint32_t m_Stride;  //步长
+  uint32_t m_Stride;  
   std::vector<BufferElement> m_Elements;
 };
 
@@ -102,6 +102,12 @@ class VertexBuffer {
 
   static Ref<VertexBuffer> Create(uint32_t size);
   static Ref<VertexBuffer> Create(const void* vertices, uint32_t size);
+
+  /**
+   * @brief 为双精度数据创造vertexbuffer
+   * 内部将double类型转成float类型
+  */
+  static Ref<Kazel::VertexBuffer> CreateForDouble(const double* vertices, uint32_t count);
 };
 
 class IndexBuffer {
@@ -110,6 +116,7 @@ class IndexBuffer {
   virtual void Bind() = 0;
   virtual void UnBind() = 0;
   virtual uint32_t Count() = 0;
-  static Ref<IndexBuffer> Create(const uint32_t* vertices, uint32_t count);
+
+  static Ref<IndexBuffer> Create(const uint32_t* indices, uint32_t count);
 };
 }  // namespace Kazel

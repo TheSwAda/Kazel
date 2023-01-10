@@ -16,7 +16,7 @@ class OpenGlShader : public Shader {
   virtual void compileShader(const char* fileName) override;
   virtual void compileShader(const char* fileName, ShaderType type) override;
   virtual void compileShaderSource(const std::string& source,
-                             ShaderType type) override;
+                                   ShaderType type) override;
 
   void saveProgram(const std::string& filePath) override;
 
@@ -52,8 +52,7 @@ class OpenGlShader : public Shader {
   GLint getUniformLocation(const char* name);
 
  private:
-  std::map<std::string, int>
-      uniformLocations;  //避免多次查询同一个uniform变量的位置
+  std::map<std::string, int> uniformLocations;  
   uint32_t mProgramID;
   bool mbLinked;
 };

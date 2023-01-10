@@ -2,7 +2,7 @@
 
 #include <utility>
 #include "Core.h"
-#include "KeyCode.h"
+#include "KeyMouseCode.h"
 
 namespace Kazel {
 class Input {
@@ -10,7 +10,7 @@ class Input {
   static bool IsKeyPressed(KeyCode keyCode) {
     return s_Instance->IsKeyPressedImpl(keyCode);
   }
-  static bool IsMouseButtonPressed(int button) {
+  static bool IsMouseButtonPressed(MouseCode button) {
     return s_Instance->IsMouseButtonPressedImpl(button);
   }
   static float GetMouseX() { return s_Instance->GetMouseXImpl(); }
@@ -21,7 +21,7 @@ class Input {
 
  protected:
   virtual bool IsKeyPressedImpl(KeyCode keyCode) = 0;
-  virtual bool IsMouseButtonPressedImpl(int button) = 0;
+  virtual bool IsMouseButtonPressedImpl(MouseCode button) = 0;
 
   virtual float GetMouseXImpl() = 0;
   virtual float GetMouseYImpl() = 0;

@@ -21,25 +21,36 @@ static GLenum ShaderDataTypeToGlBase(ShaderDataType type) {
   return 0;
 }
 
-OpenGlVertexArray::OpenGlVertexArray() { glCreateVertexArrays(1, &m_ID); }
+OpenGlVertexArray::OpenGlVertexArray() {
+  glCreateVertexArrays(1, &m_ID);
+}
 
-OpenGlVertexArray::~OpenGlVertexArray() { glDeleteVertexArrays(1, &m_ID); }
+OpenGlVertexArray::~OpenGlVertexArray() {
+  glDeleteVertexArrays(1, &m_ID);
+}
 
-void OpenGlVertexArray::Bind() { glBindVertexArray(m_ID); }
+void OpenGlVertexArray::Bind() {
+  glBindVertexArray(m_ID);
+}
 
-void OpenGlVertexArray::UnBind() { glBindVertexArray(0); }
+void OpenGlVertexArray::UnBind() {
+  glBindVertexArray(0);
+}
 
 void OpenGlVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer) {
+  auto& layout = vertexBuffer->Layout();
+  if (layout.IsEmpty()) {
+    KZ_CORE_ERROR("VB is empty");
+  }
+
   glBindVertexArray(m_ID);
   vertexBuffer->Bind();
 
-  for (const auto& e : vertexBuffer->Layout()) {
-    /**
-     * ¶¥µãÊôÐÔ,¶¥µãÊôÐÔµÄ´óÐ¡,Êý¾ÝÀàÐÍ,±ê×¼»¯,²½³¤(Á¬ÐøµÄ¶¥µãÊôÐÔ×éÖ®¼äµÄ¼ä¸ô),Æ«ÒÆÁ¿(Offset)
-     */
+  for (const auto& e : layout) {
+
+    // é¡¶ç‚¹å±žæ€§,é¡¶ç‚¹å±žæ€§çš„å¤§å°,æ•°æ®ç±»åž‹,æ ‡å‡†åŒ–,æ­¥é•¿(è¿žç»­çš„é¡¶ç‚¹å±žæ€§ç»„ä¹‹é—´çš„é—´éš”),åç§»é‡(Offset)
     glVertexAttribPointer(m_Index, e.Count(), ShaderDataTypeToGlBase(e.Type),
-                          e.Normalized ? GL_TRUE : GL_FALSE,
-                          vertexBuffer->Layout().Stride(),
+                          e.Normalized ? GL_TRUE : GL_FALSE, vertexBuffer->Layout().Stride(),
                           (const void*)(e.OffSet));
 
     glVertexAttribDivisor(m_Index, e.AttributeDivisor);

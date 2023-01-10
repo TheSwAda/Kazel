@@ -15,7 +15,5 @@ add_subdirectory(vendor/stdImage)
 add_subdirectory(vendor/assimp)
 
 add_subdirectory(src)
-target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/vendor)
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/vendor)
 target_include_directories(${PROJECT_NAME} INTERFACE ${PROJECT_SOURCE_DIR}/src)
-target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
-

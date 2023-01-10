@@ -1,19 +1,19 @@
 #pragma once
 
 #include <sstream>
-#include "Core/KeyCode.h"
+#include "Core/KeyMouseCode.h"
 
 #include "Event.h"
 namespace Kazel {
 class KeyEvent : public Event {
  public:
-  KeyCode GetKeyCode() const { return m_KeyCode; }
+  KeyCode GetKeyCode() const { return m_keyCode; }
 
   EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
  protected:
-  KeyEvent(const KeyCode keycode) : m_KeyCode(keycode) {}
+  KeyEvent(const KeyCode keycode) : m_keyCode(keycode) {}
 
-  KeyCode m_KeyCode;
+  KeyCode m_keyCode;
 };
 
 class KeyPressedEvent : public KeyEvent {
@@ -25,7 +25,7 @@ class KeyPressedEvent : public KeyEvent {
 
   std::string ToString() const override {
     std::stringstream ss;
-    ss << "KeyPressedEvent: " << m_KeyCode << " (" << m_RepeatCount
+    ss << "KeyPressedEvent: " << static_cast<int>(m_keyCode) << " (" << m_RepeatCount
        << " repeats)";
     return ss.str();
   }
@@ -41,7 +41,7 @@ class KeyReleasedEvent : public KeyEvent {
 
   std::string ToString() const override {
     std::stringstream ss;
-    ss << "KeyReleasedEvent: " << m_KeyCode;
+    ss << "KeyReleasedEvent: " << static_cast<int>(m_keyCode);
     return ss.str();
   }
 
@@ -54,7 +54,7 @@ class KeyTypedEvent : public KeyEvent {
 
   std::string ToString() const override {
     std::stringstream ss;
-    ss << "KeyTypedEvent: " << m_KeyCode;
+    ss << "KeyTypedEvent: " << static_cast<int>(m_keyCode);
     return ss.str();
   }
 

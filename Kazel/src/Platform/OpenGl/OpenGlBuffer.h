@@ -18,7 +18,7 @@ class OpenGlVertexBuffer : public VertexBuffer {
 
  private:
   uint32_t m_ID;
-  BufferLayout m_Layout;
+  BufferLayout m_layout;
 };
 
 class OpenGlIndexBuffer : public IndexBuffer {
@@ -32,6 +32,6 @@ class OpenGlIndexBuffer : public IndexBuffer {
 
  private:
   uint32_t m_ID;
-  uint32_t m_Count;  //Ë÷Òý
+  uint32_t m_Count;
 };
 }  // namespace Kazel

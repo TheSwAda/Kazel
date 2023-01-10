@@ -22,15 +22,18 @@ Window* Window::Create(const WindowProps& props) {
   return new WindowsWindow(props);
 }
 
-WindowsWindow::WindowsWindow(const WindowProps& props) { Init(props); }
+WindowsWindow::WindowsWindow(const WindowProps& props) {
+  Init(props);
+}
 
-WindowsWindow::~WindowsWindow() { Shutdown(); }
+WindowsWindow::~WindowsWindow() {
+  Shutdown();
+}
 
 void WindowsWindow::Init(const WindowProps& props) {
   m_Data.Props = props;
 
-  KZ_CORE_INFO("Creating window {0} ({1}, {2})", props.Title, props.Width,
-               props.Height);
+  KZ_CORE_INFO("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
   if (s_GLFWWindowCount == 0) {
     int success = glfwInit();
@@ -38,8 +41,8 @@ void WindowsWindow::Init(const WindowProps& props) {
     glfwSetErrorCallback(GLFWErrorCallback);
   }
 
-  m_Window = glfwCreateWindow((int)props.Width, (int)props.Height,
-                              props.Title.c_str(), nullptr, nullptr);
+  m_Window =
+      glfwCreateWindow((int)props.Width, (int)props.Height, props.Title.c_str(), nullptr, nullptr);
   ++s_GLFWWindowCount;
   m_Context = new OpenGlContext(m_Window);
   m_Context->Init();
@@ -48,15 +51,14 @@ void WindowsWindow::Init(const WindowProps& props) {
   SetVSync(true);
   // Set GLFW callbacks
 #pragma region WindowResize
-  glfwSetWindowSizeCallback(
-      m_Window, [](GLFWwindow* window, int width, int height) {
-        WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-        data.Props.Width = width;
-        data.Props.Height = height;
+  glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
+    WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+    data.Props.Width = width;
+    data.Props.Height = height;
 
-        WindowResizeEvent event(width, height);
-        data.EventCallback(event);
-      });
+    WindowResizeEvent event(width, height);
+    data.EventCallback(event);
+  });
 #pragma endregion
 
 #pragma region WindowClose
@@ -68,71 +70,69 @@ void WindowsWindow::Init(const WindowProps& props) {
 #pragma endregion
 
 #pragma region KeyBoard
-  glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode,
-                                  int action, int mods) {
+  glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
     WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
     switch (action) {
       case GLFW_PRESS: {
-        KeyPressedEvent event(key, 0);
+        KeyPressedEvent event(static_cast<KeyCode>(key), 0);
         data.EventCallback(event);
         break;
       }
       case GLFW_RELEASE: {
-        KeyReleasedEvent event(key);
+        KeyReleasedEvent event(static_cast<KeyCode>(key));
         data.EventCallback(event);
         break;
       }
       case GLFW_REPEAT: {
-        KeyPressedEvent event(key, 1);
+        KeyPressedEvent event(static_cast<KeyCode>(key), 1);
         data.EventCallback(event);
         break;
       }
     }
   });
 
-  glfwSetCharCallback(m_Window, [](GLFWwindow* window, uint32_t keycode) {
+  glfwSetCharCallback(m_Window, [](GLFWwindow* window, uint32_t key) {
     WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
-    KeyTypedEvent event(keycode);
+    KeyTypedEvent event(static_cast<KeyCode>(key));
     data.EventCallback(event);
   });
 #pragma endregion
 
 #pragma region mouse
-  glfwSetMouseButtonCallback(
-      m_Window, [](GLFWwindow* window, int button, int action, int mods) {
-        WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+  glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods) {
+    WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+    double xpos = 0, ypos = 0;
+    glfwGetCursorPos(window, &xpos, &ypos);
 
-        switch (action) {
-          case GLFW_PRESS: {
-            MouseButtonPressedEvent event(button);
-            data.EventCallback(event);
-            break;
-          }
-          case GLFW_RELEASE: {
-            MouseButtonReleasedEvent event(button);
-            data.EventCallback(event);
-            break;
-          }
-        }
-      });
-
-  glfwSetScrollCallback(
-      m_Window, [](GLFWwindow* window, double xOffset, double yOffset) {
-        WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-
-        MouseScrolledEvent event((float)xOffset, (float)yOffset);
+    switch (action) {
+      case GLFW_PRESS: {
+        MouseButtonPressedEvent event(static_cast<MouseCode>(button), xpos, ypos);
         data.EventCallback(event);
-      });
-
-  glfwSetCursorPosCallback(
-      m_Window, [](GLFWwindow* window, double xPos, double yPos) {
-        WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-
-        MouseMovedEvent event((float)xPos, (float)yPos);
+        break;
+      }
+      case GLFW_RELEASE: {
+        MouseButtonReleasedEvent event(static_cast<MouseCode>(button), xpos, ypos);
         data.EventCallback(event);
-      });
+        break;
+      }
+    }
+  });
+
+  glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset) {
+    WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+    MouseScrolledEvent event(xOffset, yOffset);
+    data.EventCallback(event);
+  });
+
+  glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos) {
+    WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+    MouseMovedEvent event(xPos, yPos);
+    data.EventCallback(event);
+  });
 #pragma endregion
 }
 
@@ -146,8 +146,8 @@ void WindowsWindow::Shutdown() {
 }
 
 void WindowsWindow::Begin() {
-  Kazel::RenderCommand::SetColor({0.1f, 0.1f, 0.1f, 1.0f});
-  Kazel::RenderCommand::Clear();
+  ClearState state;
+  RenderCommand::Clear(state);
 }
 
 void WindowsWindow::End() {
@@ -164,7 +164,9 @@ void WindowsWindow::SetVSync(bool enabled) {
   m_Data.VSync = enabled;
 }
 
-bool WindowsWindow::IsVSync() const { return m_Data.VSync; }
+bool WindowsWindow::IsVSync() const {
+  return m_Data.VSync;
+}
 
 void WindowsWindow::SetInputMode(int mode, int value) {
   glfwSetInputMode(m_Window, mode, value);

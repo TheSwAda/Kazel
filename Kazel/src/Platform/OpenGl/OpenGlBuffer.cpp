@@ -25,10 +25,10 @@ void OpenGlVertexBuffer::Bind() { glBindBuffer(GL_ARRAY_BUFFER, m_ID); }
 
 void OpenGlVertexBuffer::UnBind() { glBindBuffer(GL_ARRAY_BUFFER, 0); }
 
-const BufferLayout& OpenGlVertexBuffer::Layout() const { return m_Layout; }
+const BufferLayout& OpenGlVertexBuffer::Layout() const { return m_layout; }
 
 void OpenGlVertexBuffer::SetLayout(const BufferLayout& layout) {
-  m_Layout = layout;
+  m_layout = layout;
 }
 
 std::shared_ptr<IndexBuffer> IndexBuffer::Create(const uint32_t* vertices,

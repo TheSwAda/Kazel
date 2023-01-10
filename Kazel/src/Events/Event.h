@@ -62,22 +62,33 @@ class Event {
   }
 };
 
+/**
+ * @brief 事件分发器
+*/
 class EventDispatcher {
  public:
-  EventDispatcher(Event& event) : m_Event(event) {}
+  EventDispatcher(Event& event) : m_event(event) {}
 
   // F will be deduced by the compiler
+  
+  /**
+   * @brief 事件处理
+   * @tparam T 事件类型
+   * @tparam F 事件处理函数
+   * @param func 
+   * @return 当待处理的事件类型与T相同时，返回true，否则返回false
+  */
   template <typename T, typename F>
   bool Dispatch(const F& func) {
-    if (m_Event.GetEventType() == T::GetStaticType()) {
-      m_Event.Handled |= func(static_cast<T&>(m_Event));
+    if (m_event.GetEventType() == T::GetStaticType()) {
+      m_event.Handled |= func(static_cast<T&>(m_event));
       return true;
     }
     return false;
   }
 
  private:
-  Event& m_Event;
+  Event& m_event;
 };
 
 inline std::ostream& operator<<(std::ostream& os, const Event& e) {

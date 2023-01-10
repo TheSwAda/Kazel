@@ -11,6 +11,9 @@ class VertexArray {
   virtual void UnBind() = 0;
   virtual void AddVertexBuffer(const Ref<VertexBuffer> &vertexBuffer) = 0;
   virtual void SetIndexBuffer(const Ref<IndexBuffer> &IndexBuffer) = 0;
+  virtual void SetIndicesNumber(uint32_t count) = 0;
+  virtual uint32_t GetIndeicesNumber() = 0;
+
   virtual Ref<IndexBuffer> GetIndexBuffer() const = 0;
   static Ref<VertexArray> Create();
 };

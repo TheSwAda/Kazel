@@ -1,23 +1,24 @@
 #include "kzpch.h"
+
 #include "Renderer.h"
-#include "Renderer2D.h"
 #include "Platform/OpenGl/OpenGlShader.h"
+#include "Renderer2D.h"
 
 namespace Kazel {
-Renderer::SceneData* Renderer::s_SceneData = nullptr;
+Renderer::SceneData* Renderer::ms_sceneData = nullptr;
 
 void Renderer::Init() {
-  s_SceneData = new SceneData;
+  ms_sceneData = new SceneData;
   RenderCommand::Init();
-  Renderer2D::Init();
+  //Renderer2D::Init();
 }
 
 void Renderer::ShutDown() {
-  if (s_SceneData) {
-    delete s_SceneData;
-    s_SceneData = nullptr;
+  if (ms_sceneData) {
+    delete ms_sceneData;
+    ms_sceneData = nullptr;
   }
-  Renderer2D::ShutDown();
+  //Renderer2D::ShutDown();
 }
 
 void Renderer::OnWindowResize(uint32_t width, uint32_t height) {
@@ -25,40 +26,25 @@ void Renderer::OnWindowResize(uint32_t width, uint32_t height) {
 }
 
 void Renderer::BeginScence(Camera& camera) {
-  s_SceneData->ViewProjectionMartix = camera.GetViewProjectionMatrix();
+  ms_sceneData->ViewProjectionMartix = camera.ViewPorjection();
 }
 
 void Renderer::EndScence() {}
 
-void Renderer::Submit(const Ref<Shader>& shader,
-                      const Ref<VertexArray>& vertexArray,
-                      const glm::mat4& tranform /*= glm::mat4(1.0f)*/,
-                      uint32_t vertexCount /*= 0*/) {
-  shader->use();
-  shader->setUniform("u_ViewProjection", s_SceneData->ViewProjectionMartix);
-  shader->setUniform("u_Transform", tranform);
-
-  vertexArray->Bind();
-  if (vertexCount == 0)
-    RenderCommand::Draw(vertexArray);
-  else
-    RenderCommand::Draw(vertexArray, vertexCount);
-}
-
-void Renderer::Submit(const Ref<Shader>& shader, const Ref<Model>& model,
+void Renderer::Submit(const Ref<Shader>& shader, const Mesh& mesh,
                       const glm::mat4& tranform /*= glm::mat4(1.0f)*/) {
   shader->use();
-  shader->setUniform("u_ViewProjection", s_SceneData->ViewProjectionMartix);
+  shader->setUniform("u_ViewProjection", ms_sceneData->ViewProjectionMartix);
   shader->setUniform("u_Transform", tranform);
 
-  model->Draw(shader);
+  mesh.m_va->Bind();
+  RenderCommand::Draw(mesh.m_va, mesh.m_primitiveType);
 }
 
-void Renderer::SubmitInstanced(
-    const Ref<Shader>& shader, const Ref<Model>& model, uint32_t count,
-    const glm::mat4& tranform /*= glm::mat4(1.0f)*/) {
+void Renderer::SubmitInstanced(const Ref<Shader>& shader, const Ref<Model>& model, uint32_t count,
+                               const glm::mat4& tranform /*= glm::mat4(1.0f)*/) {
   shader->use();
-  shader->setUniform("u_ViewProjection", s_SceneData->ViewProjectionMartix);
+  shader->setUniform("u_ViewProjection", ms_sceneData->ViewProjectionMartix);
   shader->setUniform("u_Transform", tranform);
 
   model->DrawInstanced(shader, count);

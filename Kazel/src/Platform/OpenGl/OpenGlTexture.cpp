@@ -1,4 +1,4 @@
-#include "kzpch.h"
+ï»¿#include "kzpch.h"
 
 #include "OpenGlTexture.h"
 #define STB_IMAGE_IMPLEMENTATION
@@ -9,7 +9,7 @@
 namespace Kazel {
 OpenGlTexture2D::OpenGlTexture2D(const std::string& path)
     : m_Width(0), m_Height(0), m_ID(0), m_Path(path) {
-  stbi_set_flip_vertically_on_load(false);
+  stbi_set_flip_vertically_on_load(true);
   int width, height, nrComponents;
   unsigned char* data =
       stbi_load(m_Path.c_str(), &width, &height, &nrComponents, 0);
@@ -129,9 +129,9 @@ void OpenGlTexture2D::InitTexture(int width, int height, int component) {
   glTextureStorage2D(m_ID, 1, internalFormat, m_Width, m_Height);
 
   /**
-   * ÎÆÀí¹ıÂË(¸ù¾İÎÆÀí×ø±ê,ÌáÈ¡ÏñËØµÄÑÕÉ«)
-   * GL_NEAREST  Ñ¡ÔñÖĞĞÄµã×î½Ó½üÎÆÀí×ø±êµÄÏñËØ
-   * GL_LINEAR   »ùÓÚÎÆÀí×ø±ê¸½½üµÄÎÆÀíÏñËØ£¬¼ÆËã³öÒ»¸ö²åÖµ
+   * çº¹ç†è¿‡æ»¤(æ ¹æ®çº¹ç†åæ ‡,æå–åƒç´ çš„é¢œè‰²)
+   * GL_NEAREST  é€‰æ‹©ä¸­å¿ƒç‚¹æœ€æ¥è¿‘çº¹ç†åæ ‡çš„åƒç´ 
+   * GL_LINEAR   åŸºäºçº¹ç†åæ ‡é™„è¿‘çš„çº¹ç†åƒç´ ï¼Œè®¡ç®—å‡ºä¸€ä¸ªæ’å€¼
    */
   glTextureParameteri(m_ID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTextureParameteri(m_ID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);

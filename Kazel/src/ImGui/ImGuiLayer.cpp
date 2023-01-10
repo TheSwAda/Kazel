@@ -4,8 +4,8 @@
 
 #include "Core/Application.h"
 
-#include <imgui/backends/imgui_impl_glfw.h>
-#include <imgui/backends/imgui_impl_opengl3.h>
+#include <ImGui/imgui_impl_glfw.h>
+#include <ImGui/imgui_impl_opengl3.h>
 #include <imgui/imgui.h>
 #include <GLFW/glfw3.h>
 namespace Kazel {
@@ -62,8 +62,8 @@ void ImGuiLayer::OnDetach() {
 }
 
 void ImGuiLayer::OnImGuiRender() {
-  static bool show = true;
-  ImGui::ShowDemoWindow(&show);
+  //static bool show = false;
+  //ImGui::ShowDemoWindow(&show);
 }
 
 void ImGuiLayer::Begin() {

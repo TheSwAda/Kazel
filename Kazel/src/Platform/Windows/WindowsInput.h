@@ -7,7 +7,7 @@ class WindowsInput : public Input {
  protected:
   bool IsKeyPressedImpl(KeyCode keyCode) override;
 
-  bool IsMouseButtonPressedImpl(int button) override;
+  bool IsMouseButtonPressedImpl(MouseCode button) override;
 
   float GetMouseXImpl() override;
 

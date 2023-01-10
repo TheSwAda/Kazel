@@ -20,7 +20,7 @@ CMesh::CMesh(const std::vector<SMeshVertex>& vertices,
 void CMesh::Draw(const Ref<Shader>& shader) {
   setTexture(shader);
   m_VAO->Bind();
-  RenderCommand::Draw(m_VAO);
+  RenderCommand::Draw(m_VAO,PrimitiveType::Triangles);
 }
 
 void CMesh::DrawInstanced(const Ref<Shader>& shader, uint32_t count) {

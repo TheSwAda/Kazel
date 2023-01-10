@@ -1,2 +1,0 @@
--style="{BaseOnStyle:Google SortIncludes:false}" -output-replacements-xml -style=file -fallback-style=Google -assume-filename=Application.cpp -offset=0 -length=2857 -cursor=818
-success

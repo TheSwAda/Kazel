@@ -1,6 +1,7 @@
 # build
 out/
 bin/
+build/
 
 # assert
 .vs/
