@@ -25,6 +25,8 @@ class Renderer {
   static void BeginScence(Camera& camera);
   static void EndScence();
 
+  static void Submit(const RenderState& state, const Ref<Shader>& shader, const Mesh& mesh, const glm::mat4& tranform = glm::mat4(1.0f));
+
   static void Submit(const Ref<Shader>& shader, const Mesh& mesh,
                      const glm::mat4& tranform = glm::mat4(1.0f));
 

@@ -49,5 +49,6 @@ class OpenGlRendererAPI : public RendererAPI {
   void ApplyRenderState(const RenderState& renderState);
   void ApplyDepthTest(const DepthTest& depthTest);
   void ApplyBlending(const Blending& blending);
+  void ApplyPointSize(ProgramPointSize pointSize);
 };
 }  // namespace Kazel

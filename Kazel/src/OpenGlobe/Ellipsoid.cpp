@@ -18,8 +18,8 @@ Ellipsoid::Ellipsoid(const dvec3& radii) {
 
 Kazel::dvec3 Ellipsoid::ToVector3d(const Geodetic3D& geodetic) const {
   auto n = GeodeticSurfaceNormal(geodetic);
-  auto k = n * m_radii * m_radii;
-  double gamma = glm::length(k * n);
+  auto k = n * m_radiiSquared;
+  double gamma = std::sqrt((k.x * n.x) + (k.y * n.y) + (k.z * n.z));
 
   auto surface = k / gamma;
   return surface + (geodetic.m_height * n);

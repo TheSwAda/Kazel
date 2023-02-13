@@ -55,20 +55,21 @@ class Ellipsoid {
   }
 
   /**
-   * @brief 计算基于地球表面法线方向
+   * @brief 地球表面法线方向
    *
    * @param geodetic 大地坐标系下的经纬高
-   * @return Array3d
+   * @return Array3d 法线向量
    */
   dvec3 GeodeticSurfaceNormal(const Geodetic3D& geodetic) const {
-    double cosLat = std::cos(geodetic.m_longitude);
-    return dvec3(cosLat * std::cos(geodetic.m_latitude), cosLat * std::sin(geodetic.m_latitude), cosLat);
+    double cosLat = std::cos(geodetic.m_latitude);
+    return dvec3(cosLat * std::cos(geodetic.m_longitude), cosLat * std::sin(geodetic.m_longitude),
+                 std::sin(geodetic.m_latitude));
   }
   /**
-   * @brief Geographic to WGS84;
+   * @brief 经纬高转笛卡尔坐标系
    *
-   * @param geodetic 大地坐标系下的经纬高
-   * @return Array3d
+   * @param geodetic 经纬高
+   * @return Array3d 在笛卡尔坐标系下的坐标值
    */
   dvec3 ToVector3d(const Geodetic3D& geodetic) const;
 

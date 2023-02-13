@@ -31,14 +31,23 @@ void Renderer::BeginScence(Camera& camera) {
 
 void Renderer::EndScence() {}
 
-void Renderer::Submit(const Ref<Shader>& shader, const Mesh& mesh,
-                      const glm::mat4& tranform /*= glm::mat4(1.0f)*/) {
+void Renderer::Submit(const Ref<Shader>& shader, const Mesh& mesh, const glm::mat4& tranform /*= glm::mat4(1.0f)*/) {
   shader->use();
   shader->setUniform("u_ViewProjection", ms_sceneData->ViewProjectionMartix);
   shader->setUniform("u_Transform", tranform);
 
   mesh.m_va->Bind();
   RenderCommand::Draw(mesh.m_va, mesh.m_primitiveType);
+}
+
+void Renderer::Submit(const RenderState& state, const Ref<Shader>& shader, const Mesh& mesh,
+                      const glm::mat4& tranform /*= glm::mat4(1.0f)*/) {
+  shader->use();
+  shader->setUniform("u_ViewProjection", ms_sceneData->ViewProjectionMartix);
+  shader->setUniform("u_Transform", tranform);
+
+  mesh.m_va->Bind();
+  RenderCommand::Draw(state, mesh.m_va, mesh.m_primitiveType);
 }
 
 void Renderer::SubmitInstanced(const Ref<Shader>& shader, const Ref<Model>& model, uint32_t count,

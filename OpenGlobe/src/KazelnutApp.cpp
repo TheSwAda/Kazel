@@ -1,11 +1,12 @@
 #include <Kazel.h>
 #include <Core/EntryPoint.h>
 #include "GlobeLayer.h"
-
+#include "TestLayer.h"
 class SandBoxApp : public Kazel::Application {
  public:
   SandBoxApp(const Kazel::WindowProps& props) : m_WindowProps(props), Application(props) {
     PushLayer(new GlobeLayer);
+    //PushLayer(new TestLayer(props.Width, props.Height));
   }
   ~SandBoxApp() {}
 

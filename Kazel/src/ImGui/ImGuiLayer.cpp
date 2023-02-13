@@ -1,7 +1,7 @@
 #include "kzpch.h"
 
 #include "ImGuiLayer.h"
-
+#include "Renderer/RenderCommand.h"
 #include "Core/Application.h"
 
 #include <ImGui/imgui_impl_glfw.h>
@@ -48,7 +48,7 @@ void ImGuiLayer::OnAttach() {
   GLFWwindow *window =
       static_cast<GLFWwindow *>(app.GetWindow().GetNativeWindow());
 
-  const char *glsl_version = "#version 460";
+  const char *glsl_version = "#version 330";
   // Setup Platform/Renderer backends
   ImGui_ImplGlfw_InitForOpenGL(window, true);
   ImGui_ImplOpenGL3_Init(glsl_version);
@@ -75,8 +75,6 @@ void ImGuiLayer::Begin() {
 
 void ImGuiLayer::End() {
   ImGuiIO &io = ImGui::GetIO();
-  Application &App = Application::Get();
-
   // Render dear imgui into screen
   ImGui::Render();
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

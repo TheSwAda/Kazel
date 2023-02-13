@@ -32,4 +32,7 @@ class GlobeLayer : public Kazel::Layer {
   Ref<Shader> m_globeShader;
   Scope<CameraLookAtPoint> m_cameraController;
   //Kazel::PerspectCameraController m_cameraController;
+
+  Ref<Shader> m_demoShader;
+
 };

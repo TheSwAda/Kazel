@@ -1,5 +1,8 @@
 ﻿#pragma once
 #include "Camera.h"
+#include "Events/ApplicationEvent.h"
+#include "Events/KeyEvent.h"
+#include "Events/MouseEvent.h"
 
 #include <glm/ext.hpp>
 
@@ -17,11 +20,11 @@ class PerspectiveCamera : public Camera {
   double m_fovx;
 
   //定义相机的本体坐标系
-  glm::dvec3 m_position{0, 0, 3};  //相机的位置
-  glm::dvec3 m_target{0, 0, 0};      //相机看向的目标点
-  glm::dvec3 m_up{0, 1, 0};          //相机向上指向
+  glm::dvec3 m_position{3, 0, 0};  //相机的位置
+  glm::dvec3 m_target{0, 0, 0};    //相机看向的目标点
+  glm::dvec3 m_up{0, 1, 0};        //相机向上指向
 
-  glm::dvec3 m_worldUp{0, 1.0, 0};
+  glm::dvec3 m_worldUp{0, 1, 0};
 
  public:
   PerspectiveCamera();
@@ -31,7 +34,35 @@ class PerspectiveCamera : public Camera {
   double Distance() const { return glm::length(m_target - m_position); }
   void ZoomToTarget(double radius);
   void UpdateView();
-  void UpdateProjection() { m_projection = glm::perspective(m_fovy, m_apsect, m_zNear, m_zFar); }
+  inline void UpdateProjection();
 };
 
+class PerspectCameraController {
+ public:
+  PerspectCameraController(uint32_t width, uint32_t height, float zNear = 0.1f, float zFar = 100.0f);
+
+  void onUpdate(double timeStep);
+
+  PerspectiveCamera& GetCamera() { return m_Camera; }
+  const PerspectiveCamera& GetCamera() const { return m_Camera; }
+
+  void onEvent(Event& event);
+
+  bool OnWindowResized(WindowResizeEvent& event);
+  bool OnMouseScrolled(MouseScrolledEvent& event);
+  bool onKeyPressed(KeyPressedEvent& event);
+  bool onMouseMoved(MouseMovedEvent& event);
+
+ private:
+  bool m_MouseShouldMove = false;
+
+  PerspectiveCamera m_Camera;
+
+  float m_LastX;
+  float m_LastY;
+
+  float m_MoveSpeed = 10.0f;
+  float m_Sensitivity = 0.05f;
+  float m_TimeStep = 0;
+};
 }  // namespace Kazel

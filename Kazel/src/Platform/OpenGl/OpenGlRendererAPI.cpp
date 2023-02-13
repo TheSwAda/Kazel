@@ -107,7 +107,19 @@ GLenum TypeConverterGL3x::To(Blending::BlendEquation equation) {
 }
 
 void OpenGlRendererAPI::Init() {
-  glEnable(GL_DEPTH_TEST);
+  //init renderer state
+  if (m_renderState.m_depthTest.m_enabled) {
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(TypeConverterGL3x::To(m_renderState.m_depthTest.m_function));
+  }
+
+  if (m_renderState.m_programPointSize == ProgramPointSize::Enabled)
+    glEnable(GL_PROGRAM_POINT_SIZE);
+
+  if (m_renderState.m_blending.m_enabled) {
+    glEnable(GL_BLEND);
+    //#todo function
+  }
 }
 
 void OpenGlRendererAPI::Clear(const ClearState& clearState) {
@@ -116,8 +128,7 @@ void OpenGlRendererAPI::Clear(const ClearState& clearState) {
 
   if (m_clearColor != clearState.m_color) {
     m_clearColor = clearState.m_color;
-    glClearColor(m_clearColor[0], m_clearColor[1], m_clearColor[2],
-                 m_clearColor[3]);
+    glClearColor(m_clearColor[0], m_clearColor[1], m_clearColor[2], m_clearColor[3]);
   }
 
   if (m_clearDepth != clearState.m_depth) {
@@ -152,36 +163,31 @@ void OpenGlRendererAPI::CheckError() {
   }
 }
 
-void OpenGlRendererAPI::Draw(const Ref<VertexArray>& vertexArray,
-                             PrimitiveType primitiveType) {
+void OpenGlRendererAPI::Draw(const Ref<VertexArray>& vertexArray, PrimitiveType primitiveType) {
   auto indexBuffer = vertexArray->GetIndexBuffer();
   if (indexBuffer) {
-    glDrawElements(TypeConverterGL3x::To(primitiveType), indexBuffer->Count(),
-                   GL_UNSIGNED_INT, nullptr);
+    glDrawElements(TypeConverterGL3x::To(primitiveType), indexBuffer->Count(), GL_UNSIGNED_INT, nullptr);
   } else {
-    glDrawArrays(TypeConverterGL3x::To(primitiveType), 0,
-                 vertexArray->GetIndeicesNumber());
+    uint32_t num = vertexArray->GetIndicesNumber();
+    if (num <= 0)
+      KZ_CORE_ERROR("nothing need to draw");
+    glDrawArrays(TypeConverterGL3x::To(primitiveType), 0, num);
   }
 }
 
-void OpenGlRendererAPI::Draw(const RenderState& renderState,
-                             const Ref<VertexArray>& vertexArray,
+void OpenGlRendererAPI::Draw(const RenderState& renderState, const Ref<VertexArray>& vertexArray,
                              PrimitiveType primitiveType) {
   ApplyRenderState(renderState);
   Draw(vertexArray, primitiveType);
 }
 
-void OpenGlRendererAPI::DrawIndexedInstanced(
-    const Ref<VertexArray>& vertexArray, uint32_t primcount,
-    uint32_t indexCount, PrimitiveType primitiveType) {
-  uint32_t count =
-      indexCount ? indexCount : vertexArray->GetIndexBuffer()->Count();
-  glDrawElementsInstanced(TypeConverterGL3x::To(primitiveType), count,
-                          GL_UNSIGNED_INT, nullptr, primcount);
+void OpenGlRendererAPI::DrawIndexedInstanced(const Ref<VertexArray>& vertexArray, uint32_t primcount,
+                                             uint32_t indexCount, PrimitiveType primitiveType) {
+  uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->Count();
+  glDrawElementsInstanced(TypeConverterGL3x::To(primitiveType), count, GL_UNSIGNED_INT, nullptr, primcount);
 }
 
-void OpenGlRendererAPI::SetViewPort(uint32_t x, uint32_t y, uint32_t width,
-                                    uint32_t height) {
+void OpenGlRendererAPI::SetViewPort(uint32_t x, uint32_t y, uint32_t width, uint32_t height) {
   glViewport(x, y, width, height);
 }
 
@@ -212,32 +218,23 @@ void OpenGlRendererAPI::ApplyBlending(const Blending& blending) {
   }
 
   if (blending.m_enabled) {
-    if ((m_renderState.m_blending.m_sourceRGBFactor !=
-         blending.m_sourceRGBFactor) ||
-        (m_renderState.m_blending.m_destinationRGBFactor !=
-         blending.m_destinationRGBFactor) ||
-        (m_renderState.m_blending.m_sourceAlphaFactor !=
-         blending.m_sourceAlphaFactor) ||
-        (m_renderState.m_blending.m_destinationAlphaFactor !=
-         blending.m_destinationAlphaFactor)) {
-      glBlendFuncSeparate(
-          TypeConverterGL3x::To(blending.m_sourceRGBFactor),
-          TypeConverterGL3x::To(blending.m_destinationRGBFactor),
-          TypeConverterGL3x::To(blending.m_sourceAlphaFactor),
-          TypeConverterGL3x::To(blending.m_destinationAlphaFactor));
+    if ((m_renderState.m_blending.m_sourceRGBFactor != blending.m_sourceRGBFactor) ||
+        (m_renderState.m_blending.m_destinationRGBFactor != blending.m_destinationRGBFactor) ||
+        (m_renderState.m_blending.m_sourceAlphaFactor != blending.m_sourceAlphaFactor) ||
+        (m_renderState.m_blending.m_destinationAlphaFactor != blending.m_destinationAlphaFactor)) {
+      glBlendFuncSeparate(TypeConverterGL3x::To(blending.m_sourceRGBFactor),
+                          TypeConverterGL3x::To(blending.m_destinationRGBFactor),
+                          TypeConverterGL3x::To(blending.m_sourceAlphaFactor),
+                          TypeConverterGL3x::To(blending.m_destinationAlphaFactor));
 
       m_renderState.m_blending.m_sourceRGBFactor = blending.m_sourceRGBFactor;
-      m_renderState.m_blending.m_destinationRGBFactor =
-          blending.m_destinationRGBFactor;
-      m_renderState.m_blending.m_sourceAlphaFactor =
-          blending.m_sourceAlphaFactor;
-      m_renderState.m_blending.m_destinationAlphaFactor =
-          blending.m_destinationAlphaFactor;
+      m_renderState.m_blending.m_destinationRGBFactor = blending.m_destinationRGBFactor;
+      m_renderState.m_blending.m_sourceAlphaFactor = blending.m_sourceAlphaFactor;
+      m_renderState.m_blending.m_destinationAlphaFactor = blending.m_destinationAlphaFactor;
     }
 
     if ((m_renderState.m_blending.m_rgbEquation != blending.m_rgbEquation) ||
-        (m_renderState.m_blending.m_alphaEquation !=
-         blending.m_alphaEquation)) {
+        (m_renderState.m_blending.m_alphaEquation != blending.m_alphaEquation)) {
       glBlendEquationSeparate(TypeConverterGL3x::To(blending.m_rgbEquation),
                               TypeConverterGL3x::To(blending.m_alphaEquation));
 
@@ -246,10 +243,16 @@ void OpenGlRendererAPI::ApplyBlending(const Blending& blending) {
     }
 
     if (m_renderState.m_blending.m_color != blending.m_color) {
-      glBlendColor(blending.m_color[0], blending.m_color[1],
-                   blending.m_color[2], blending.m_color[3]);
+      glBlendColor(blending.m_color[0], blending.m_color[1], blending.m_color[2], blending.m_color[3]);
       m_renderState.m_blending.m_color = blending.m_color;
     }
+  }
+}
+
+void OpenGlRendererAPI::ApplyPointSize(ProgramPointSize pointSize) {
+  if (m_renderState.m_programPointSize != pointSize) {
+    pointSize == ProgramPointSize::Enabled ? glEnable(GL_PROGRAM_POINT_SIZE) : glDisable(GL_PROGRAM_POINT_SIZE);
+    m_renderState.m_programPointSize = pointSize;
   }
 }
 

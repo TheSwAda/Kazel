@@ -13,7 +13,7 @@ class OpenGlVertexArray : public VertexArray {
   void SetIndexBuffer(const Ref<IndexBuffer>& IndexBuffer) override;
   void SetIndicesNumber(uint32_t count) override { m_indicesNumber = count; }
   
-  uint32_t GetIndeicesNumber() override { return m_indicesNumber; }
+  uint32_t GetIndicesNumber() override { return m_indicesNumber; }
   Ref<IndexBuffer> GetIndexBuffer() const override { return m_IndexBuffer; }
 
  private:
